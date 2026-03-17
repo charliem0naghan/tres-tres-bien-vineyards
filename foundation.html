@@ -1,0 +1,844 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>The Vines Foundation — Tres Très Bien</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=Jost:wght@300;400;500&display=swap" rel="stylesheet" />
+  <style>
+    /* ── Reset & Variables ──────────────────────────────── */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --burgundy:  #4A1020;
+      --ruby:      #7B2D3E;
+      --gold:      #B8955A;
+      --gold-lt:   #D4B483;
+      --cream:     #FAF7F2;
+      --parchment: #EDE6D9;
+      --stone:     #C4BAA8;
+      --charcoal:  #1C1814;
+      --mid:       #5A504A;
+      --serif:     'Cormorant Garamond', Georgia, serif;
+      --sans:      'Jost', system-ui, sans-serif;
+      --ease:      cubic-bezier(.4,0,.2,1);
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      background: var(--cream);
+      color: var(--charcoal);
+      font-family: var(--sans);
+      font-weight: 300;
+      line-height: 1.7;
+      overflow-x: hidden;
+    }
+
+    img { display: block; max-width: 100%; }
+    a { color: inherit; text-decoration: none; }
+
+    .container { max-width: 1160px; margin: 0 auto; padding: 0 2rem; }
+
+    .section-label {
+      font-size: .7rem;
+      font-weight: 500;
+      letter-spacing: .2em;
+      text-transform: uppercase;
+      color: var(--gold);
+      margin-bottom: 1rem;
+    }
+
+    /* ── Fade-in on scroll ──────────────────────────────── */
+    .reveal {
+      opacity: 0;
+      transform: translateY(28px);
+      transition: opacity .8s var(--ease), transform .8s var(--ease);
+    }
+    .reveal.visible { opacity: 1; transform: none; }
+    .reveal-delay-1 { transition-delay: .15s; }
+    .reveal-delay-2 { transition-delay: .3s; }
+    .reveal-delay-3 { transition-delay: .45s; }
+
+    /* ── Navigation ─────────────────────────────────────── */
+    #nav {
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      z-index: 100;
+      padding: 1.5rem 0;
+      transition: background .4s var(--ease), padding .4s var(--ease), box-shadow .4s;
+    }
+    #nav.scrolled {
+      background: rgba(250,247,242,.96);
+      backdrop-filter: blur(8px);
+      padding: .9rem 0;
+      box-shadow: 0 1px 0 var(--parchment);
+    }
+    .nav-inner {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .nav-logo {
+      font-family: var(--serif);
+      font-size: 1.35rem;
+      font-weight: 600;
+      letter-spacing: .03em;
+      color: var(--cream);
+      transition: color .4s;
+    }
+    #nav.scrolled .nav-logo { color: var(--burgundy); }
+    .nav-links {
+      display: flex;
+      gap: 2.5rem;
+      list-style: none;
+    }
+    .nav-links a {
+      font-size: .72rem;
+      font-weight: 400;
+      letter-spacing: .15em;
+      text-transform: uppercase;
+      color: rgba(250,247,242,.8);
+      transition: color .3s;
+    }
+    #nav.scrolled .nav-links a { color: var(--mid); }
+    .nav-links a:hover { color: var(--gold) !important; }
+    .nav-cta {
+      font-size: .72rem;
+      font-weight: 500;
+      letter-spacing: .12em;
+      text-transform: uppercase;
+      padding: .55rem 1.4rem;
+      border: 1px solid rgba(250,247,242,.5);
+      color: var(--cream);
+      border-radius: 2px;
+      transition: background .3s, border-color .3s, color .3s;
+    }
+    #nav.scrolled .nav-cta {
+      border-color: var(--burgundy);
+      color: var(--burgundy);
+    }
+    .nav-cta:hover {
+      background: var(--gold) !important;
+      border-color: var(--gold) !important;
+      color: #fff !important;
+    }
+
+    /* ── Page Hero ──────────────────────────────────────── */
+    .page-hero {
+      min-height: 65vh;
+      display: flex;
+      align-items: center;
+      position: relative;
+      overflow: hidden;
+      background: var(--burgundy);
+    }
+    .page-hero-bg {
+      position: absolute;
+      inset: 0;
+      background:
+        radial-gradient(ellipse 80% 70% at 40% 40%, rgba(80,40,10,.3) 0%, rgba(20,4,8,.7) 100%),
+        linear-gradient(135deg, #1A0808 0%, #2A1010 25%, #4A1020 50%, #3A1818 75%, #1A0C08 100%);
+    }
+    .page-hero-bg::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background-image: repeating-linear-gradient(
+        -45deg,
+        transparent,
+        transparent 80px,
+        rgba(184,149,90,.04) 80px,
+        rgba(184,149,90,.04) 81px
+      );
+    }
+    .page-hero-content {
+      position: relative;
+      z-index: 2;
+      padding: 10rem 0 6rem;
+    }
+    .breadcrumb {
+      display: inline-flex;
+      align-items: center;
+      gap: .5rem;
+      font-size: .68rem;
+      letter-spacing: .18em;
+      text-transform: uppercase;
+      color: rgba(250,247,242,.45);
+      margin-bottom: 2rem;
+      transition: color .3s;
+    }
+    .breadcrumb:hover { color: var(--gold-lt); }
+    .breadcrumb svg { width: 12px; height: 12px; }
+    .page-hero h1 {
+      font-family: var(--serif);
+      font-size: clamp(3rem, 7vw, 6rem);
+      font-weight: 300;
+      line-height: 1.05;
+      color: var(--cream);
+      margin-bottom: 1.5rem;
+      max-width: 20ch;
+    }
+    .page-hero h1 em { font-style: italic; color: var(--gold-lt); }
+    .page-hero-sub {
+      font-size: 1rem;
+      font-weight: 300;
+      color: rgba(250,247,242,.6);
+      max-width: 48ch;
+      line-height: 1.8;
+    }
+
+    /* ── Ornament divider ───────────────────────────────── */
+    .ornament {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 1.2rem;
+      padding: 3rem 0;
+      color: var(--stone);
+    }
+    .ornament::before, .ornament::after {
+      content: '';
+      flex: 1;
+      max-width: 120px;
+      height: 1px;
+      background: linear-gradient(to right, transparent, var(--stone));
+    }
+    .ornament::after { background: linear-gradient(to left, transparent, var(--stone)); }
+    .ornament svg { width: 18px; height: 18px; opacity: .5; }
+
+    /* ── Content sections ───────────────────────────────── */
+    .content-section { padding: 7rem 0; }
+    .content-section.parchment { background: var(--parchment); }
+    .content-section.cream { background: var(--cream); }
+
+    .content-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 6rem;
+      align-items: start;
+    }
+    .content-text h2 {
+      font-family: var(--serif);
+      font-size: clamp(2.2rem, 4vw, 3.2rem);
+      font-weight: 300;
+      line-height: 1.2;
+      margin-bottom: 1.8rem;
+    }
+    .content-text h2 em { font-style: italic; color: var(--ruby); }
+    .content-text p {
+      color: var(--mid);
+      margin-bottom: 1.4rem;
+      font-size: .95rem;
+      line-height: 1.8;
+    }
+    .content-text p:last-child { margin-bottom: 0; }
+
+    /* Pull quote */
+    .pull-quote {
+      border-left: 3px solid var(--gold);
+      padding: 1.5rem 2rem;
+      margin: 2rem 0;
+    }
+    .pull-quote p {
+      font-family: var(--serif);
+      font-size: 1.35rem;
+      font-style: italic;
+      color: var(--ruby);
+      line-height: 1.5;
+      margin-bottom: .6rem !important;
+    }
+    .pull-quote cite {
+      font-size: .68rem;
+      letter-spacing: .15em;
+      text-transform: uppercase;
+      color: var(--stone);
+      font-style: normal;
+    }
+
+    /* ── Foundation visual block ────────────────────────── */
+    .foundation-visual-block {
+      background: var(--burgundy);
+      border-radius: 3px;
+      padding: 4rem 3rem;
+      text-align: center;
+      position: relative;
+      overflow: hidden;
+    }
+    .foundation-visual-block::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background-image: repeating-linear-gradient(
+        -45deg,
+        transparent,
+        transparent 40px,
+        rgba(184,149,90,.05) 40px,
+        rgba(184,149,90,.05) 41px
+      );
+    }
+    .fvb-inner { position: relative; z-index: 1; }
+    .fvb-num {
+      font-family: var(--serif);
+      font-size: clamp(4rem, 8vw, 7rem);
+      font-weight: 300;
+      color: var(--gold-lt);
+      line-height: 1;
+      margin-bottom: .5rem;
+    }
+    .fvb-unit {
+      font-size: .72rem;
+      letter-spacing: .2em;
+      text-transform: uppercase;
+      color: rgba(250,247,242,.4);
+      margin-bottom: 2rem;
+    }
+    .fvb-rule {
+      width: 40px;
+      height: 1px;
+      background: var(--gold);
+      opacity: .5;
+      margin: 0 auto 2rem;
+    }
+    .fvb-quote {
+      font-family: var(--serif);
+      font-size: 1.2rem;
+      font-style: italic;
+      color: rgba(250,247,242,.65);
+      line-height: 1.5;
+      max-width: 26ch;
+      margin: 0 auto;
+    }
+
+    /* ── Program cards ──────────────────────────────────── */
+    .programs-section {
+      padding: 7rem 0;
+      background: var(--parchment);
+    }
+    .programs-header {
+      text-align: center;
+      margin-bottom: 4rem;
+    }
+    .programs-header h2 {
+      font-family: var(--serif);
+      font-size: clamp(2rem, 4vw, 3rem);
+      font-weight: 300;
+      margin-bottom: 1rem;
+    }
+    .programs-header p {
+      color: var(--mid);
+      font-size: .95rem;
+      max-width: 50ch;
+      margin: 0 auto;
+      line-height: 1.8;
+    }
+
+    .program-cards {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 1.5rem;
+    }
+    .program-card {
+      background: var(--cream);
+      border: 1px solid rgba(196,186,168,.4);
+      border-radius: 3px;
+      overflow: hidden;
+      transition: box-shadow .3s var(--ease), transform .3s var(--ease);
+    }
+    .program-card:hover {
+      box-shadow: 0 16px 50px rgba(28,24,20,.1);
+      transform: translateY(-4px);
+    }
+    .program-card-top {
+      background: var(--burgundy);
+      padding: 2.5rem 2rem 2rem;
+      position: relative;
+      overflow: hidden;
+    }
+    .program-card-top::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background-image: repeating-linear-gradient(
+        -45deg,
+        transparent,
+        transparent 30px,
+        rgba(184,149,90,.06) 30px,
+        rgba(184,149,90,.06) 31px
+      );
+    }
+    .pct-inner { position: relative; z-index: 1; }
+    .program-card-icon {
+      width: 48px; height: 48px;
+      border-radius: 50%;
+      background: rgba(184,149,90,.15);
+      border: 1px solid rgba(184,149,90,.3);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 1.5rem;
+    }
+    .program-card-icon svg { width: 22px; height: 22px; color: var(--gold-lt); }
+    .program-card h3 {
+      font-family: var(--serif);
+      font-size: 1.6rem;
+      font-weight: 400;
+      color: var(--cream);
+      line-height: 1.2;
+    }
+    .program-card-body {
+      padding: 2rem;
+    }
+    .program-card-body p {
+      font-size: .9rem;
+      color: var(--mid);
+      line-height: 1.8;
+      margin-bottom: 1.5rem;
+    }
+    .program-card-body p:last-child { margin-bottom: 0; }
+    .program-card-detail {
+      font-size: .68rem;
+      letter-spacing: .15em;
+      text-transform: uppercase;
+      color: var(--gold);
+      padding-top: 1.2rem;
+      border-top: 1px solid var(--parchment);
+    }
+
+    /* ── Quote banner ───────────────────────────────────── */
+    .quote-banner {
+      padding: 6rem 0;
+      background: var(--charcoal);
+      position: relative;
+      overflow: hidden;
+      text-align: center;
+    }
+    .quote-banner::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: repeating-linear-gradient(
+        45deg,
+        transparent,
+        transparent 60px,
+        rgba(255,255,255,.01) 60px,
+        rgba(255,255,255,.01) 61px
+      );
+    }
+    .quote-banner-inner {
+      position: relative;
+      z-index: 1;
+      max-width: 700px;
+      margin: 0 auto;
+    }
+    .quote-banner .qb-mark {
+      font-family: var(--serif);
+      font-size: 6rem;
+      font-weight: 300;
+      color: rgba(184,149,90,.15);
+      line-height: .5;
+      margin-bottom: 1rem;
+    }
+    .quote-banner blockquote {
+      font-family: var(--serif);
+      font-size: clamp(1.5rem, 3vw, 2.2rem);
+      font-weight: 300;
+      font-style: italic;
+      color: var(--cream);
+      line-height: 1.4;
+      margin-bottom: 2rem;
+    }
+    .quote-banner cite {
+      font-size: .68rem;
+      letter-spacing: .2em;
+      text-transform: uppercase;
+      color: var(--gold);
+      font-style: normal;
+    }
+
+    /* ── CTA section ────────────────────────────────────── */
+    .cta-section {
+      padding: 7rem 0;
+      background: var(--cream);
+      text-align: center;
+    }
+    .cta-section .section-label { display: inline-block; }
+    .cta-section h2 {
+      font-family: var(--serif);
+      font-size: clamp(2.2rem, 4vw, 3.4rem);
+      font-weight: 300;
+      line-height: 1.2;
+      margin-bottom: 1.5rem;
+    }
+    .cta-section h2 em { font-style: italic; color: var(--ruby); }
+    .cta-section p {
+      color: var(--mid);
+      font-size: .95rem;
+      max-width: 48ch;
+      margin: 0 auto 3rem;
+      line-height: 1.8;
+    }
+    .btn-primary {
+      display: inline-flex;
+      align-items: center;
+      gap: .6rem;
+      padding: 1rem 2.5rem;
+      background: var(--burgundy);
+      color: var(--cream);
+      font-size: .75rem;
+      font-weight: 500;
+      letter-spacing: .15em;
+      text-transform: uppercase;
+      border-radius: 2px;
+      transition: background .3s, transform .2s;
+    }
+    .btn-primary:hover { background: var(--ruby); transform: translateY(-2px); }
+    .btn-primary svg { width: 14px; height: 14px; }
+
+    /* ── Footer ─────────────────────────────────────────── */
+    footer {
+      background: var(--charcoal);
+      padding: 4rem 0 2.5rem;
+      border-top: 1px solid rgba(255,255,255,.06);
+    }
+    .footer-top {
+      display: grid;
+      grid-template-columns: 2fr 1fr 1fr;
+      gap: 4rem;
+      padding-bottom: 3rem;
+      border-bottom: 1px solid rgba(255,255,255,.08);
+    }
+    .footer-brand .fb-logo {
+      font-family: var(--serif);
+      font-size: 1.4rem;
+      font-weight: 600;
+      color: var(--cream);
+      margin-bottom: .8rem;
+    }
+    .footer-brand p {
+      font-size: .85rem;
+      color: rgba(250,247,242,.4);
+      max-width: 30ch;
+      line-height: 1.7;
+    }
+    .footer-col h4 {
+      font-size: .65rem;
+      font-weight: 500;
+      letter-spacing: .2em;
+      text-transform: uppercase;
+      color: var(--gold);
+      margin-bottom: 1.2rem;
+    }
+    .footer-col ul { list-style: none; }
+    .footer-col ul li { margin-bottom: .6rem; }
+    .footer-col ul a {
+      font-size: .82rem;
+      color: rgba(250,247,242,.45);
+      transition: color .2s;
+    }
+    .footer-col ul a:hover { color: var(--gold-lt); }
+    .footer-bottom {
+      padding-top: 2rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .footer-bottom p { font-size: .72rem; color: rgba(250,247,242,.25); }
+    .age-notice { font-size: .7rem; color: rgba(250,247,242,.25); letter-spacing: .05em; }
+
+    /* ── Responsive ─────────────────────────────────────── */
+    @media (max-width: 900px) {
+      .content-grid { grid-template-columns: 1fr; gap: 3rem; }
+      .program-cards { grid-template-columns: 1fr; max-width: 480px; margin: 0 auto; }
+      .footer-top { grid-template-columns: 1fr 1fr; }
+      .footer-brand { grid-column: span 2; }
+      .nav-links { display: none; }
+      .page-hero-content { padding: 8rem 0 4rem; }
+    }
+    @media (max-width: 600px) {
+      .footer-top { grid-template-columns: 1fr; }
+      .footer-brand { grid-column: span 1; }
+      .footer-bottom { flex-direction: column; gap: .5rem; text-align: center; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Navigation -->
+  <nav id="nav">
+    <div class="container">
+      <div class="nav-inner">
+        <a href="winery.html" class="nav-logo">Tres Très Bien</a>
+        <ul class="nav-links">
+          <li><a href="winery.html#story">Our Story</a></li>
+          <li><a href="winery.html#mendoza">Mendoza</a></li>
+          <li><a href="winery.html#wines">Our Wines</a></li>
+          <li><a href="foundation.html">Foundation</a></li>
+          <li><a href="winery.html#contact">Contact</a></li>
+        </ul>
+        <a href="winery.html#contact" class="nav-cta">Get Our Wine</a>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Page Hero -->
+  <section class="page-hero">
+    <div class="page-hero-bg"></div>
+    <div class="container">
+      <div class="page-hero-content">
+        <a href="winery.html" class="breadcrumb reveal">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
+          Tres Très Bien
+        </a>
+        <h1 class="reveal reveal-delay-1">
+          The Vines<br><em>Foundation</em>
+        </h1>
+        <p class="page-hero-sub reveal reveal-delay-2">
+          Wine has always been about community. The Vines Foundation is our commitment to the people and the land that make Tres Très Bien possible.
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <!-- Section 1: The Foundation -->
+  <section class="content-section cream">
+    <div class="container">
+      <div class="content-grid">
+        <div class="content-text">
+          <p class="section-label reveal">Our Commitment</p>
+          <h2 class="reveal reveal-delay-1">
+            Beyond the<br><em>bottle</em>
+          </h2>
+          <p class="reveal reveal-delay-2">
+            When the three founding families of Tres Très Bien chose to plant vines in Tunuyán, they understood they were not simply entering the wine business. They were entering into a relationship with a place — with its soils, its climate, its history, and above all its people. The Vines Foundation is the formal expression of that relationship.
+          </p>
+          <p class="reveal reveal-delay-2">
+            The Uco Valley is one of Argentina's most exciting wine regions, but the communities that live and work within it face real challenges. The men and women who tend the vines, operate the irrigation systems, and carry out the physical labour of farming are the foundation on which every bottle of wine here rests. Their children deserve educational opportunity. Their farming practices deserve support toward greater sustainability. Their communities deserve investment.
+          </p>
+          <p class="reveal reveal-delay-2">
+            A portion of every bottle of Tres Très Bien wine sold goes directly to the Foundation. The allocation is not symbolic — it is material, and it grows as our production grows. This is the mechanism we have chosen to ensure that the value we derive from this landscape flows back into it.
+          </p>
+
+          <div class="pull-quote reveal reveal-delay-3">
+            <p>"Wine has always been about community. So should the vineyard."</p>
+            <cite>The Founding Families, Tres Très Bien Vineyards</cite>
+          </div>
+        </div>
+
+        <div class="content-visual reveal reveal-delay-1">
+          <div class="foundation-visual-block">
+            <div class="fvb-inner">
+              <div class="fvb-num">100%</div>
+              <div class="fvb-unit">Of Foundation proceeds reinvested<br>in Tunuyán communities</div>
+              <div class="fvb-rule"></div>
+              <div class="fvb-quote">
+                "The land gives to the wine. The wine gives to the land."
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Program Cards -->
+  <section class="programs-section">
+    <div class="container">
+      <div class="programs-header reveal">
+        <p class="section-label">Foundation Programs</p>
+        <h2>Three areas of focus</h2>
+        <p>The Vines Foundation concentrates its work in three interconnected areas, all rooted in the communities of Tunuyán and the broader Uco Valley.</p>
+      </div>
+
+      <div class="program-cards">
+        <div class="program-card reveal reveal-delay-1">
+          <div class="program-card-top">
+            <div class="pct-inner">
+              <div class="program-card-icon">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5"/><path d="M2 12l10 5 10-5"/></svg>
+              </div>
+              <h3>Education</h3>
+            </div>
+          </div>
+          <div class="program-card-body">
+            <p>The children of vineyard workers deserve access to the same educational opportunities as any child. The Foundation supports schooling, materials, and after-school programmes for families employed in viticulture and related agricultural work across the Tunuyán department.</p>
+            <p>We fund school supplies, provide scholarships for secondary and tertiary education, and support a reading and literacy programme in partnership with local schools in Tunuyán township.</p>
+            <div class="program-card-detail">Education for vineyard families · Tunuyán Township</div>
+          </div>
+        </div>
+
+        <div class="program-card reveal reveal-delay-2">
+          <div class="program-card-top">
+            <div class="pct-inner">
+              <div class="program-card-icon">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M2 22V12a10 10 0 0 1 20 0v10"/><path d="M6 22v-6a6 6 0 0 1 12 0v6"/><path d="M12 22v-2"/></svg>
+              </div>
+              <h3>Sustainable Agriculture</h3>
+            </div>
+          </div>
+          <div class="program-card-body">
+            <p>The long-term health of the Uco Valley depends on farming practices that work with the land rather than against it. The Foundation supports local growers — particularly small, family-operated farms — in transitioning toward more sustainable viticulture and agriculture.</p>
+            <p>This includes support for organic certification, water conservation practices, soil health improvement, and the reduction of chemical inputs across smallholder farms in the Los Chacayes corridor.</p>
+            <div class="program-card-detail">Sustainable farming · Water conservation · Soil health</div>
+          </div>
+        </div>
+
+        <div class="program-card reveal reveal-delay-3">
+          <div class="program-card-top">
+            <div class="pct-inner">
+              <div class="program-card-icon">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+              </div>
+              <h3>Community</h3>
+            </div>
+          </div>
+          <div class="program-card-body">
+            <p>The Vines Foundation believes that a thriving wine region depends on thriving communities. Beyond education and agriculture, the Foundation invests in community infrastructure and cultural initiatives in Tunuyán — supporting local sports clubs, community events, and cultural programmes that strengthen the social fabric of the valley.</p>
+            <p>We are committed to being present in the community year-round, not only at harvest. Our families visit regularly, and the Foundation's work is guided by the community's own identified needs.</p>
+            <div class="program-card-detail">Community investment · Tunuyán department</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Quote Banner -->
+  <section class="quote-banner">
+    <div class="container">
+      <div class="quote-banner-inner reveal">
+        <div class="qb-mark">"</div>
+        <blockquote>
+          Wine has always been about community.<br>So should the vineyard.
+        </blockquote>
+        <cite>The Founding Families — Tres Très Bien Vineyards</cite>
+      </div>
+    </div>
+  </section>
+
+  <div class="ornament">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
+  </div>
+
+  <!-- Section 2: Why it Matters -->
+  <section class="content-section parchment">
+    <div class="container">
+      <div class="content-grid">
+        <div class="content-text">
+          <p class="section-label reveal">Why It Matters</p>
+          <h2 class="reveal reveal-delay-1">
+            Wine is made by<br><em>human hands</em>
+          </h2>
+          <p class="reveal reveal-delay-2">
+            The language used to describe wine often focuses on the natural — the soil, the climate, the vine. But wine is not made by nature alone. It is made by people: the workers who prune the vines in winter and pick the grapes in autumn, the cellar hands who monitor fermentation through the night, the families who have lived and worked in Tunuyán for generations before any of our three founding families had ever heard of the Uco Valley.
+          </p>
+          <p class="reveal reveal-delay-2">
+            Every bottle of Tres Très Bien wine carries the invisible labour of that community. The Vines Foundation is our attempt to make that relationship visible, and to ensure that the exchange is genuinely reciprocal — not simply extractive, but generative.
+          </p>
+          <p class="reveal reveal-delay-2">
+            We do not pretend that a charitable foundation resolves every complexity of a global wine industry. But we believe that the choice to act — to commit a portion of every sale to the people and the land that make the wine possible — is the right choice, made for the right reasons. It is also, simply, the kind of winery we want to be.
+          </p>
+        </div>
+
+        <div class="content-visual reveal reveal-delay-1">
+          <div style="background: var(--burgundy); border-radius: 3px; padding: 3.5rem 3rem; position: relative; overflow: hidden;">
+            <div style="position: absolute; inset: 0; background-image: repeating-linear-gradient(-45deg, transparent, transparent 40px, rgba(184,149,90,.05) 40px, rgba(184,149,90,.05) 41px);"></div>
+            <div style="position: relative; z-index: 1;">
+              <div style="font-size: .65rem; letter-spacing: .22em; text-transform: uppercase; color: var(--gold); margin-bottom: 1.5rem;">Foundation Principle</div>
+              <div style="font-family: var(--serif); font-size: clamp(1.5rem, 2.5vw, 2rem); font-weight: 300; color: var(--cream); line-height: 1.3; margin-bottom: 1.5rem;">
+                A portion of every<br><em style="font-style: italic; color: var(--gold-lt);">bottle we sell</em>
+              </div>
+              <div style="width: 40px; height: 1px; background: var(--gold); opacity: .5; margin-bottom: 2rem;"></div>
+              <div style="font-size: .9rem; color: rgba(250,247,242,.6); line-height: 1.8; margin-bottom: 1.8rem;">
+                From the first vintage to the last, the Foundation receives its allocation from every sale — automatically, without condition. As Tres Très Bien grows, so does the Foundation's capacity to invest in Tunuyán.
+              </div>
+              <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+                <div style="background: rgba(255,255,255,.05); border: 1px solid rgba(255,255,255,.08); border-radius: 2px; padding: 1.2rem; text-align: center;">
+                  <div style="font-family: var(--serif); font-size: 1.8rem; font-weight: 300; color: var(--gold-lt); line-height: 1;">3</div>
+                  <div style="font-size: .6rem; letter-spacing: .15em; text-transform: uppercase; color: rgba(250,247,242,.35); margin-top: .3rem;">Programs</div>
+                </div>
+                <div style="background: rgba(255,255,255,.05); border: 1px solid rgba(255,255,255,.08); border-radius: 2px; padding: 1.2rem; text-align: center;">
+                  <div style="font-family: var(--serif); font-size: 1.8rem; font-weight: 300; color: var(--gold-lt); line-height: 1;">2016</div>
+                  <div style="font-size: .6rem; letter-spacing: .15em; text-transform: uppercase; color: rgba(250,247,242,.35); margin-top: .3rem;">Since founding</div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- CTA Section -->
+  <section class="cta-section">
+    <div class="container">
+      <p class="section-label reveal">Support the Foundation</p>
+      <h2 class="reveal reveal-delay-1">
+        Every bottle<br><em>makes a difference</em>
+      </h2>
+      <p class="reveal reveal-delay-2">
+        The most direct way to support the Vines Foundation is to buy our wine. A portion of every purchase flows back into education, sustainable agriculture, and community investment in Tunuyán. To enquire about the Foundation directly, or to discuss partnership opportunities, please reach out to us.
+      </p>
+      <a href="winery.html#contact" class="btn-primary reveal reveal-delay-3">
+        Support the Foundation
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+      </a>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer>
+    <div class="container">
+      <div class="footer-top">
+        <div class="footer-brand">
+          <div class="fb-logo">Tres Très Bien Vineyards</div>
+          <p>Three families. Three children each. One extraordinary valley. Wine grown with purpose in the Uco Valley, Mendoza since 2016.</p>
+        </div>
+        <div class="footer-col">
+          <h4>Navigate</h4>
+          <ul>
+            <li><a href="winery.html#story">Our Story</a></li>
+            <li><a href="the-vines.html">The Vines of Mendoza</a></li>
+            <li><a href="winery.html#wines">Our Wines</a></li>
+            <li><a href="foundation.html">The Vines Foundation</a></li>
+            <li><a href="winery.html#contact">Contact</a></li>
+          </ul>
+        </div>
+        <div class="footer-col">
+          <h4>Our Wines</h4>
+          <ul>
+            <li><a href="winery.html#wines">Cabernet Franc</a></li>
+            <li><a href="winery.html#wines">Malbec</a></li>
+            <li><a href="winery.html#wines">The Blend</a></li>
+            <li><a href="winery.html#wines">Cabernet Franc Rosé</a></li>
+            <li><a href="winery.html#contact">Get Our Wine</a></li>
+          </ul>
+        </div>
+      </div>
+      <div class="footer-bottom">
+        <p>© 2024 Tres Très Bien Vineyards. All rights reserved.</p>
+        <p class="age-notice">Please drink responsibly. Must be of legal drinking age.</p>
+      </div>
+    </div>
+  </footer>
+
+  <script>
+    const nav = document.getElementById('nav');
+    window.addEventListener('scroll', () => {
+      nav.classList.toggle('scrolled', window.scrollY > 40);
+    }, { passive: true });
+
+    const revealEls = document.querySelectorAll('.reveal');
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(e => {
+        if (e.isIntersecting) {
+          e.target.classList.add('visible');
+          observer.unobserve(e.target);
+        }
+      });
+    }, { threshold: 0.12 });
+    revealEls.forEach(el => observer.observe(el));
+  </script>
+</body>
+</html>
